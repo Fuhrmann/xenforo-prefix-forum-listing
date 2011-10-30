@@ -7,7 +7,7 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
 	 * @param $array
 	 * @param $key
 	 * 
-	 * @since 1.0.0 build 1
+	 * @since 1.0.0 build 2
 	 */
 	public function multi_sort(&$array, $key) 
 	{
