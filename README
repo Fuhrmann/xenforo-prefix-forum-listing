@@ -1,1 +1,10 @@
-Prefix Forum Listing
+1.0.0 build 2:
+- Choose the forums to show the prefix list.
+- Choose the minimum ammout of threads to show a prefix.
+- Choose the display order of the prefix list (by title, by ammount of threads and by display order)
+
+1.0.0 build 1:
+
+- Prefixes only show if:
+a) has some threads with it
+b) usergroup of the user can use the prefix
