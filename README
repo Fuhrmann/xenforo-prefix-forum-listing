@@ -1,3 +1,10 @@
+1.2.0 (14/03/2013):
+- Fixed "ErrorException: Array to string conversion" (PHP 5.4)
+- New: an option "Select all" in the options when choosing the forums to show the prefix listing (admin template "option_list_option_multiple")
+- New: you can select only the parent category of a forum that all subforums will show the prefixes. If you choose to show prefixes in the "Travel" category, actually all the subforums will show the prefixes list.
+- Fixed: In admin, when setting 1 to "Do not show prefixes with less then X threads" all prefixes in thread are displayed (no filter)
+- Other bug fixes
+
 1.0.0 build 2:
 - Choose the forums to show the prefix list.
 - Choose the minimum ammout of threads to show a prefix.
