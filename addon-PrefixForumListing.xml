@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.0" version_id="6" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="option_list_option_multiple"><![CDATA[<style>
+#ctrl_optionspfl_display_in_forums {
+    width: 200px !important;
+}
+</style>
+<script>
+$(function()
+{
+	$('#SelectAllForums').click(function(e)
+	{
+		$('#ApplicableForums').find('option').attr('selected', this.checked);
+	});
+});
+</script>			
+<fieldset id="ApplicableForums">
+	<xen:selectunit size="10" multiple="true" label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{xen:raw $preparedOption.option_value}" 
+			    hint="{$preparedOption.hint}">
+				
+	    	<xen:options source="$formatParams" selected="{$preparedOption.formatParams.selected}"/>
+	    	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	    	<xen:html>
+	    		<div><label class="muted"><input type="checkbox" id="SelectAllForums" /> <i>{xen:phrase select_all}</i></label></div>
+	    		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+	    		{xen:raw $editLink}
+	    	</xen:html>
+	</xen:selectunit>
+</fieldset>]]></template>
+  </admin_templates>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extend" active="1" description=""/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extend" active="1" description=""/>
+    <listener event_id="template_hook" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="template_hook" active="1" description=""/>
+  </code_event_listeners>
+  <cron/>
+  <email_templates/>
+  <optiongroups>
+    <group group_id="prefixForumListing" display_order="10000000" debug_only="0"/>
+    <option option_id="pfl_ammount" edit_format="spinbox" data_type="integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>min=0</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="10"/>
+    </option>
+    <option option_id="pfl_display_in_forums" edit_format="callback" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>PrefixForumListing_Option_ForumMultipleChooser::renderSelectM</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="prefixForumListing" display_order="12"/>
+    </option>
+    <option option_id="pfl_display_order" edit_format="radio" data_type="string" can_backup="1">
+      <default_value>totalThreads</default_value>
+      <edit_format_params>title = by Title
+totalThreads = by Total Threads
+display_order= by Display Order</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="20"/>
+    </option>
+    <option option_id="pfl_donotshow_totalthreads" edit_format="spinbox" data_type="string" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>min = 0</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="9"/>
+    </option>
+    <option option_id="pfl_margin_bottom" edit_format="spinbox" data_type="unsigned_numeric" can_backup="1">
+      <default_value>7</default_value>
+      <edit_format_params>min=0</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="40"/>
+    </option>
+    <option option_id="pfl_minToShow" edit_format="spinbox" data_type="unsigned_integer" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params>min=0</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="7"/>
+    </option>
+    <option option_id="pfl_orderDirection" edit_format="radio" data_type="string" can_backup="1">
+      <default_value>asc</default_value>
+      <edit_format_params>asc = ASC
+desc = DESC</edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="25"/>
+    </option>
+    <option option_id="pfl_showTotalThreads" edit_format="onoff" data_type="boolean" can_backup="1">
+      <default_value>0</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="5"/>
+    </option>
+    <option option_id="pfl_text" edit_format="textbox" data_type="string" can_backup="1">
+      <default_value>Click for specific categories:</default_value>
+      <edit_format_params></edit_format_params>
+      <sub_options></sub_options>
+      <relation group_id="prefixForumListing" display_order="1"/>
+    </option>
+  </optiongroups>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="option_group_prefixForumListing" version_id="1" version_string="1.0.0"><![CDATA[Prefix Forum Listing]]></phrase>
+    <phrase title="option_group_prefixForumListing_description" version_id="1" version_string="1.0.0"><![CDATA[Some options of the add-on Prefix Forum Listing.]]></phrase>
+    <phrase title="option_pfl_ammount" version_id="4" version_string="1.1.0"><![CDATA[Ammount of Prefixes]]></phrase>
+    <phrase title="option_pfl_ammount_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the ammount of prefixes to show. With this option you can limit the ammount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
+    <phrase title="option_pfl_display_in_forums" version_id="1" version_string="1.0.0"><![CDATA[Forum to show the prefix list?]]></phrase>
+    <phrase title="option_pfl_display_in_forums_explain" version_id="1" version_string="1.0.0"><![CDATA[Choose the forum that the prefix lists are enabled.]]></phrase>
+    <phrase title="option_pfl_display_order" version_id="4" version_string="1.1.0"><![CDATA[Prefix List Order]]></phrase>
+    <phrase title="option_pfl_display_order_explain" version_id="1" version_string="1.0.0"><![CDATA[Choose the order to display the prefix list in the forums.]]></phrase>
+    <phrase title="option_pfl_donotshow_totalthreads" version_id="1" version_string="1.0.0"><![CDATA[Do not show prefixes with less then X threads]]></phrase>
+    <phrase title="option_pfl_donotshow_totalthreads_explain" version_id="4" version_string="1.1.0"><![CDATA[Set here the numbers of threads that each prefix must have to appear in the list. Prefixes with less then this value will not be show.]]></phrase>
+    <phrase title="option_pfl_margin_bottom" version_id="4" version_string="1.1.0"><![CDATA[Margin Bottom]]></phrase>
+    <phrase title="option_pfl_margin_bottom_explain" version_id="4" version_string="1.1.0"><![CDATA[If you have to many prefixes in one forum you may get multiples lines and some overlapping. Set here the number that will be used to "separate" the lines.]]></phrase>
+    <phrase title="option_pfl_minToShow" version_id="4" version_string="1.1.0"><![CDATA[Minimum  of Total Threads Count]]></phrase>
+    <phrase title="option_pfl_minToShow_explain" version_id="4" version_string="1.1.0"><![CDATA[Choose here the minimum of thread count of each prefix that can be show in the prefix list.<br />
+If you set this value to 0, for example, all prefixes even with 0 threads will show the count in the right side of it.<br />If you set to 1, only prefixes that have thread count greater then 1 will show the thread count.<br /><b>This will only hide the thread count, not the prefix</b>]]></phrase>
+    <phrase title="option_pfl_orderDirection" version_id="4" version_string="1.1.0"><![CDATA[Order Direction]]></phrase>
+    <phrase title="option_pfl_orderDirection_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the order direction to order the list.]]></phrase>
+    <phrase title="option_pfl_showTotalThreads" version_id="4" version_string="1.1.0"><![CDATA[Show Total Count of Threads]]></phrase>
+    <phrase title="option_pfl_showTotalThreads_explain" version_id="4" version_string="1.1.0"><![CDATA[Check this option if you want to show the total count of threads of each prefix.]]></phrase>
+    <phrase title="option_pfl_text" version_id="4" version_string="1.1.0"><![CDATA[Text to Show]]></phrase>
+    <phrase title="option_pfl_text_explain" version_id="4" version_string="1.1.0"><![CDATA[This is the text to show before the prefixes list. Leave in blank to not show any text. Just the list of prefixes. <b>You may use HTML here</b>.]]></phrase>
+    <phrase title="pfl_click_for_specific" version_id="1" version_string="1.0.0"><![CDATA[Click for Specific Categories]]></phrase>
+    <phrase title="pfl_show_only_prefix_x" version_id="1" version_string="1.0.0"><![CDATA[Show only threads prefixed by {prefix}.]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates>
+    <template title="listPrefixes.css" version_id="4" version_string="1.1.0"><![CDATA[.prefix
+{
+        margin-bottom: {$xenOptions.pfl_margin_bottom}px !important;
+}
+]]></template>
+    <template title="pfl_prefixes_list" version_id="6" version_string="1.2.0"><![CDATA[<xen:if is="{$prefixes}">
+        <xen:require css="listPrefixes.css" />
+	<div class="discussionListFilters secondaryContent">
+		<xen:if is="{$xenOptions.pfl_text}">
+		    <h3 class="filtersHeading">{xen:raw {$xenOptions.pfl_text}}</h3>
+		</xen:if>
+		<tr>
+		    <xen:foreach loop="$prefixes" value="$prefix">
+		        <td>
+			    &nbsp;
+                            <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}
+			        <xen:if is="{$xenOptions.pfl_showTotalThreads}">
+				    {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', '({$prefix.totalThreads})'}
+				</xen:if>
+                            </a>
+			</td>
+		    </xen:foreach>
+		</tr>
+	</div>
+</xen:if>]]></template>
+  </templates>
+  <bb_code_media_sites/>
+</addon>

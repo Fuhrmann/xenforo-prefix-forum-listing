@@ -1,15 +1,14 @@
 <?php
 abstract class PrefixForumListing_Option_ForumMultipleChooser
-{ 
+{
 	public static function renderSelectM(XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
 	{
 		//$params['inputClass'] = 'autoSize';
-
 		return self::_render('option_list_option_multiple', $view, $fieldPrefix, $preparedOption, $canEdit);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Fetches a list of node options.
 	 *
@@ -45,7 +44,7 @@ abstract class PrefixForumListing_Option_ForumMultipleChooser
 
 		return $options;
 	}
-	
+
 	/**
 	 * Renders the node chooser option.
 	 *
@@ -60,13 +59,12 @@ abstract class PrefixForumListing_Option_ForumMultipleChooser
 	protected static function _render($templateName, XenForo_View $view, $fieldPrefix, array $preparedOption, $canEdit)
 	{
 		$preparedOption['formatParams'] = self::getNodeOptions(
-			$preparedOption['option_value'],
-			sprintf('(%s)', new XenForo_Phrase('unspecified'))
+			$preparedOption['option_value']
 		);
-		
+
 		return XenForo_ViewAdmin_Helper_Option::renderOptionTemplateInternal(
 			$templateName, $view, $fieldPrefix, $preparedOption, $canEdit, array('multiple')
 		);
 	}
-	
+
 }
