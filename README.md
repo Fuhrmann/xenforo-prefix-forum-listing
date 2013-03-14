@@ -1,14 +1,8 @@
-Developer Contact:
-
-Ricardo Fuhrmann
-fuhrmanns@gmail.com
-
-
 # [Prefix Forum Listing](http://xenforo.com/community/resources/thread-prefix-listing.80) - Shows a list of prefixes in each forum
 
-This is an addon for [XenForo](http://www.xenforo.com).
+This is an addon for the forum software [XenForo](http://www.xenforo.com).
 
-Shows a list of prefixes in each forum that has prefixes.
+<b>What it does:</b> Shows a list of prefixes in each forum that has prefixes.
 
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
 
@@ -33,9 +27,9 @@ The current version is: 1.1.0 build 2
 
 
 Fixes:
- - Global RSS feed was not working when the addon was actived.
- - Total counts was being displayed wrong.
- - Cache problems.
+- Global RSS feed was not working when the addon was actived.
+- Total counts was being displayed wrong.
+- Cache problems.
 
 
 ## 1.1.0
@@ -43,11 +37,11 @@ Fixes:
 This is the 4º version of this addon. Released in 08/02/2012.
 
 Fixes:
- - "Unfortunately, it is not possible to display Prefixes which do not have 1 thread. Would be great to also show Prefixes with zero threads." (http://xenforo.com/community/threads/pfps-com-br-thread-prefix-listing.22091/page-2#post-297441)
- - Question when I update it doesn't show a version number change in the Add-ons list. Is this normal? How do I know I'm using the newest version with this add-on? (http://xenforo.com/community/threads/thread-prefix-
- - The sort per diplay order is reversed, from big to low, is it possible to switch it in the correct way? (http://xenforo.com/community/threads/thread-prefix-listing.26811/#post-324081)listing.26811/#post-322608)
+- "Unfortunately, it is not possible to display Prefixes which do not have 1 thread. Would be great to also show Prefixes with zero threads." (http://xenforo.com/community/threads/pfps-com-br-thread-prefix-listing.22091/page-2#post-297441)
+- Question when I update it doesn't show a version number change in the Add-ons list. Is this normal? How do I know I'm using the newest version with this add-on? (http://xenforo.com/community/threads/thread-prefix-
+- The sort per diplay order is reversed, from big to low, is it possible to switch it in the correct way? (http://xenforo.com/community/threads/thread-prefix-listing.26811/#post-324081)listing.26811/#post-322608)
 [b]Resolved UI[/b] - Too many prefixes it will go to multiple lines and there are some overlapping. (http://xenforo.com/community/threads/thread-prefix-listing.26811/#post-322591)
- - Sorting prefixes by title was sorting in a wrong way. This is now fixed.
+- Sorting prefixes by title was sorting in a wrong way. This is now fixed.
 - Fixed some issues with performance when loading the prefixes.
 
 
@@ -76,7 +70,5 @@ b) usergroup of the user can use the prefix
 ## 1.0.0 build 1
 
 Released in 25/10/2011
-
-Changelog:
 
 - Released
