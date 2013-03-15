@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.0" version_id="6" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.1" version_id="7" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -56,9 +56,9 @@ $(function()
     </option>
     <option option_id="pfl_display_order" edit_format="radio" data_type="string" can_backup="1">
       <default_value>totalThreads</default_value>
-      <edit_format_params>title = by Title
-totalThreads = by Total Threads
-display_order= by Display Order</edit_format_params>
+      <edit_format_params>title = {xen:phrase option_pfl_by_title}
+totalThreads = {xen:phrase option_pfl_by_total_threads}
+display_order= {xen:phrase option_pfl_by_display_order}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="prefixForumListing" display_order="20"/>
     </option>
@@ -82,8 +82,8 @@ display_order= by Display Order</edit_format_params>
     </option>
     <option option_id="pfl_orderDirection" edit_format="radio" data_type="string" can_backup="1">
       <default_value>asc</default_value>
-      <edit_format_params>asc = ASC
-desc = DESC</edit_format_params>
+      <edit_format_params>asc = {xen:phrase option_pfl_asc}
+desc = {xen:phrase option_pfl_desc}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="prefixForumListing" display_order="25"/>
     </option>
@@ -110,6 +110,11 @@ desc = DESC</edit_format_params>
     <phrase title="option_group_prefixForumListing_description" version_id="1" version_string="1.0.0"><![CDATA[Some options of the add-on Prefix Forum Listing.]]></phrase>
     <phrase title="option_pfl_ammount" version_id="4" version_string="1.1.0"><![CDATA[Ammount of Prefixes]]></phrase>
     <phrase title="option_pfl_ammount_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the ammount of prefixes to show. With this option you can limit the ammount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
+    <phrase title="option_pfl_asc" version_id="7" version_string="1.2.1"><![CDATA[ASC]]></phrase>
+    <phrase title="option_pfl_by_display_order" version_id="7" version_string="1.2.1"><![CDATA[by Display Order]]></phrase>
+    <phrase title="option_pfl_by_title" version_id="7" version_string="1.2.1"><![CDATA[by Title]]></phrase>
+    <phrase title="option_pfl_by_total_threads" version_id="7" version_string="1.2.1"><![CDATA[by Total Threads]]></phrase>
+    <phrase title="option_pfl_desc" version_id="7" version_string="1.2.1"><![CDATA[DESC]]></phrase>
     <phrase title="option_pfl_display_in_forums" version_id="1" version_string="1.0.0"><![CDATA[Forum to show the prefix list?]]></phrase>
     <phrase title="option_pfl_display_in_forums_explain" version_id="1" version_string="1.0.0"><![CDATA[Choose the forum that the prefix lists are enabled.]]></phrase>
     <phrase title="option_pfl_display_order" version_id="4" version_string="1.1.0"><![CDATA[Prefix List Order]]></phrase>
@@ -133,11 +138,10 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
   <route_prefixes/>
   <style_properties/>
   <templates>
-    <template title="listPrefixes.css" version_id="4" version_string="1.1.0"><![CDATA[.prefix
+    <template title="listPrefixes.css" version_id="6" version_string="1.2.0"><![CDATA[.prefixLink span
 {
-        margin-bottom: {$xenOptions.pfl_margin_bottom}px !important;
-}
-]]></template>
+    margin-bottom: {$xenOptions.pfl_margin_bottom}px !important;
+}]]></template>
     <template title="pfl_prefixes_list" version_id="6" version_string="1.2.0"><![CDATA[<xen:if is="{$prefixes}">
         <xen:require css="listPrefixes.css" />
 	<div class="discussionListFilters secondaryContent">

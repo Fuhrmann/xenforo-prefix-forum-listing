@@ -6,6 +6,11 @@ This is an addon for the forum software [XenForo](http://www.xenforo.com).
 
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
 
+## 1.2.1
+Fixes:
+- Margin bottom was not being applied with custom prefix class
+- Phrases that was hardcoded are now part of the addon phrases
+
 ## 1.2.0
 
 This is the 6º version of this addon. Released in 14/03/2013.
