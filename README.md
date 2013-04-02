@@ -6,6 +6,10 @@ This is an addon for the forum software [XenForo](http://www.xenforo.com).
 
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
 
+## 1.2.2
+Fixes:
+- Fix issue when sorting prefixes by name when their titles were in Chinese (thanks cclaerhout!)
+
 ## 1.2.1
 Fixes:
 - Margin bottom was not being applied with custom prefix class
