@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.1" version_id="7" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.2" version_id="8" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -17,11 +17,11 @@ $(function()
 		$('#ApplicableForums').find('option').attr('selected', this.checked);
 	});
 });
-</script>			
+</script>
 <fieldset id="ApplicableForums">
-	<xen:selectunit size="10" multiple="true" label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{xen:raw $preparedOption.option_value}" 
+	<xen:selectunit size="10" multiple="true" label="{$preparedOption.title}" name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{xen:raw $preparedOption.option_value}"
 			    hint="{$preparedOption.hint}">
-				
+
 	    	<xen:options source="$formatParams" selected="{$preparedOption.formatParams.selected}"/>
 	    	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
 	    	<xen:html>
