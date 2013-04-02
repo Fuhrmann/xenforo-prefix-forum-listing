@@ -12,29 +12,30 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
 	 */
 	public function multi_sort(&$array, $key, $direction) 
 	{	
-		if ($direction == 'asc')
+		if ($key != 'title')
 		{
-			$signal = '>';
+			$signal = ($direction == 'asc') ? '>' : '<';
+			$return = 'return ($a["'.$key.'"] '.$signal.' $b["'.$key.'"]) ? 1 : -1;';
+			
+			usort($array, create_function(
+					'$a,$b',
+					'if ($a["'.$key.'"] == $b["'.$key.'"]) return 0;' .
+					$return
+				)
+			);
+			return;			
+			
 		}
-		else
+
+		// Alphabetically
+		$direction = ($direction == 'asc') ? SORT_ASC : SORT_DESC;
+		
+		foreach ($array as $key => $e)
 		{
-			$signal = '<';
+			$title[$key]  = $e['title']->render();
 		}
-				
-		$return = 'return ($a["'.$key.'"] '.$signal.' $b["'.$key.'"]) ? 1 : -1;';
-		
-		// alphabetically
-		if ($key == 'title')
-		{	
-			$return =  'return (ord(substr(strtolower($a["'.$key.'"]),0,1)) '.$signal.' ord(substr(strtolower($b["'.$key.'"]),0,1))) ? 1 : -1;';
-		}
-		
-		usort($array, create_function(
-						'$a,$b',
-						'if ($a["'.$key.'"] == $b["'.$key.'"]) return 0;' .
-						$return
-					)
-		);
+
+		array_multisort($title, $direction, $array);
 	}
 	
 	public function isort($a,$b)
