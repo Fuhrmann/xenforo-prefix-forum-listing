@@ -1,7 +1,7 @@
 <?php
 class PrefixForumListing_Extend_DataWriter_Discussion_Thread extends XFCP_PrefixForumListing_Extend_DataWriter_Discussion_Thread
 {
-	protected function _discussionPostDelete(array $messages)
+	protected function _discussionPostDelete()
 	{
 		if ($this->get('prefix_id'))
 		{
@@ -9,11 +9,11 @@ class PrefixForumListing_Extend_DataWriter_Discussion_Thread extends XFCP_Prefix
 			$totalThreadsCache[$this->get('prefix_id')] = NULL;
 			$this->_getDataRegistryModel()->set('PrefixesThreadsCount'.$this->get('node_id'), $totalThreadsCache);
 		}
-		return parent::_discussionPostDelete($messages);
+		return parent::_discussionPostDelete();
 	}
 
 
-	protected function _discussionPostSave(array $messages)
+	protected function _discussionPostSave()
 	{
 		if ($this->isInsert() || $this->isUpdate())
 		{
@@ -41,7 +41,7 @@ class PrefixForumListing_Extend_DataWriter_Discussion_Thread extends XFCP_Prefix
 				$this->_getDataRegistryModel()->set('PrefixesThreadsCount'.$this->getExisting('node_id'), $totalThreadsCache);
 			}
 		}
-		return parent::_discussionPostSave($messages);
+		return parent::_discussionPostSave();
 	}
 
 
