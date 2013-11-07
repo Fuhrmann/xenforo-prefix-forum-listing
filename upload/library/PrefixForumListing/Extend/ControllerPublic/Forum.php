@@ -25,12 +25,18 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 		{
 			return $response;
 		}
-		
+
 		$forum = $this->getHelper('ForumThreadPost')->assertForumValidAndViewable(
 			$forumId ? $forumId : $forumName,
 			$this->_getForumFetchOptions()
 		);
+
 		$forumId = $forum['node_id'];
+
+		if (!in_array($forumId, $options->pfl_display_in_forums) && !in_array($forum['parent_node_id'], $options->pfl_display_in_forums))
+		{
+			return $response;
+		}
 
 		$prefixModel = $this->_getThreadPrefixModel();
 		$prefixesIds = array();
@@ -38,13 +44,8 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 		$cache = false;
 
 		/* Try to get the total thread count of each prefix in the cache */
-		$totalThreadsCache = $this->_getDataRegistryModel()->get('PrefixesThreadsCount'.$forumId);
+		$totalThreadsCache = $this->_getDataRegistryModel()->get('PrefixesThreadsCount');
 
-		if (!in_array($forumId, $options->pfl_display_in_forums) && !in_array($forum['parent_node_id'], $options->pfl_display_in_forums))
-		{
-			return $response;
-		}
-		
 		// Get all prefixes of this forum from cache
 		$prefixIdCache = $forum['prefixCache'];
 
@@ -95,7 +96,7 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 			}
 
 			/* If there is nothing (threads count) in the cache for this prefix */
-			if (!isset($totalThreadsCache[$prefix['prefix_id']]))
+			if (!isset($totalThreadsCache[$forumId][$prefix['prefix_id']]))
 			{
 				$cache = true;
 
@@ -108,7 +109,7 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 				$totalThreads = $this->_getThreadModel()->countThreadsInForum($forumId, $threadFetchOptions);
 
 				/* Cache total threads */
-				$totalThreadsCache[$prefix['prefix_id']] = $totalThreads;
+				$totalThreadsCache[$forumId][$prefix['prefix_id']] = $totalThreads;
 
 				/* Verify if the user wants to show all threads or only with some ammount */
 				if ($options->pfl_donotshow_totalthreads > 0)
@@ -129,23 +130,29 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 				if ($options->pfl_donotshow_totalthreads > 0)
 				{
 					/* If the total threads (cache) of this prefix is < of the option set, we dont want to show it */
-					if ($totalThreadsCache[$prefix['prefix_id']] < $options->pfl_donotshow_totalthreads)
+					if ($totalThreadsCache[$forumId][$prefix['prefix_id']] < $options->pfl_donotshow_totalthreads)
 					{
 						unset($prefixes[$key]);
 					}
 				}
 
-				$prefix['totalThreads'] = $totalThreadsCache[$prefix['prefix_id']];
+				$prefix['totalThreads'] = $totalThreadsCache[$forumId][$prefix['prefix_id']];
 			}
 
 			$prefix = $this->_getThreadPrefixModel()->preparePrefix($prefix);
+
+			if(isset($prefix['title']))
+			{
+				$prefix['title'] = $prefix['title']->render();
+			}
+						
 			$totalThreads = 0;
 		}
 
 		/* Update the cache! */
 		if ($cache)
 		{
-			$this->_getDataRegistryModel()->set('PrefixesThreadsCount'.$forumId, $totalThreadsCache);
+			$this->_getDataRegistryModel()->set('PrefixesThreadsCount', $totalThreadsCache);
 		}
 
 		//Sort the prefixes
@@ -187,4 +194,4 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 		return $this->getModelFromCache('XenForo_Model_DataRegistry');
 	}
 }
-
+//Zend_Debug::dump($abc);
