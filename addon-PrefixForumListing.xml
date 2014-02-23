@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.2" version_id="8" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.3" version_id="9" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -31,15 +31,44 @@ $(function()
 	    	</xen:html>
 	</xen:selectunit>
 </fieldset>]]></template>
+    <template title="pfl_option_all_link"><![CDATA[<xen:checkboxunit label="" hint="{$preparedOption.hint}">
+	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}">
+		<xen:label>{$preparedOption.title}</xen:label>
+		<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][linktext]" value="{$preparedOption.option_value.linktext}" placeholder="{xen:phrase pfl_option_all_link_placeholder}" />
+	</xen:option>
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+	<xen:html>
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+		{xen:raw $editLink}
+	</xen:html>
+</xen:checkboxunit>]]></template>
+    <template title="pfl_option_show_total_threads"><![CDATA[<xen:checkboxunit label="">
+	<xen:option name="meh" label="{$preparedOption.title}" value="1" selected="{$preparedOption.option_value}">
+		<xen:radio name="{$fieldPrefix}[{$preparedOption.option_id}]" value="{$preparedOption.option_value}" inputclass="autoSize">
+			<xen:option value="Tooltip" hint="{xen:phrase pfl_show_total_as_tooltip}" selected="!{$preparedOption.option_value}">{xen:phrase pfl_as_tooltip}</xen:option>
+			<xen:option value="rightside" hint="{xen:phrase pfl_show_total_right_side}">{xen:phrase pfl_as_right_side_each_prefix}</xen:option>
+		</xen:radio>
+	</xen:option>
+
+	<xen:html>
+		{xen:raw $editLink}
+		<input type="hidden" name="{$listedFieldName}" value="{$preparedOption.option_id}" />
+	</xen:html>
+	
+	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
+</xen:checkboxunit>
+]]></template>
   </admin_templates>
+  <admin_template_modifications/>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extend" active="1" description=""/>
-    <listener event_id="load_class_datawriter" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extend" active="1" description=""/>
-    <listener event_id="template_hook" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="template_hook" active="1" description=""/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extendControllerPublicForum" active="1" hint="XenForo_ControllerPublic_Forum" description="XenForo_ControllerPublic_Forum"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extendDatawriterDiscussionThread" active="1" hint="XenForo_DataWriter_Discussion_Thread" description="XenForo_DataWriter_Discussion_Thread"/>
+    <listener event_id="template_hook" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="templateHookForumPageNavBefore" active="1" hint="forum_view_pagenav_before" description="forum_view_pagenav_before"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
+  <email_template_modifications/>
   <optiongroups>
     <group group_id="prefixForumListing" display_order="10000000" debug_only="0"/>
     <option option_id="pfl_ammount" edit_format="spinbox" data_type="integer" can_backup="1">
@@ -81,9 +110,16 @@ desc = {xen:phrase option_pfl_desc}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="prefixForumListing" display_order="25"/>
     </option>
-    <option option_id="pfl_showTotalThreads" edit_format="onoff" data_type="boolean" can_backup="1">
+    <option option_id="pfl_showAllLink" edit_format="template" data_type="array" can_backup="1">
+      <default_value>a:3:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
+      <edit_format_params>pfl_option_all_link</edit_format_params>
+      <sub_options>enabled
+linktext</sub_options>
+      <relation group_id="prefixForumListing" display_order="10"/>
+    </option>
+    <option option_id="pfl_showTotalThreads" edit_format="template" data_type="string" can_backup="1">
       <default_value>0</default_value>
-      <edit_format_params></edit_format_params>
+      <edit_format_params>pfl_option_show_total_threads</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="prefixForumListing" display_order="5"/>
     </option>
@@ -115,17 +151,26 @@ desc = {xen:phrase option_pfl_desc}</edit_format_params>
     <phrase title="option_pfl_display_order_explain" version_id="1" version_string="1.0.0"><![CDATA[Choose the order to display the prefix list in the forums.]]></phrase>
     <phrase title="option_pfl_donotshow_totalthreads" version_id="1" version_string="1.0.0"><![CDATA[Do not show prefixes with less then X threads]]></phrase>
     <phrase title="option_pfl_donotshow_totalthreads_explain" version_id="4" version_string="1.1.0"><![CDATA[Set here the numbers of threads that each prefix must have to appear in the list. Prefixes with less then this value will not be show.]]></phrase>
-    <phrase title="option_pfl_minToShow" version_id="4" version_string="1.1.0"><![CDATA[Minimum  of Total Threads Count]]></phrase>
-    <phrase title="option_pfl_minToShow_explain" version_id="4" version_string="1.1.0"><![CDATA[Choose here the minimum of thread count of each prefix that can be show in the prefix list.<br />
-If you set this value to 0, for example, all prefixes even with 0 threads will show the count in the right side of it.<br />If you set to 1, only prefixes that have thread count greater then 1 will show the thread count.<br /><b>This will only hide the thread count, not the prefix</b>]]></phrase>
+    <phrase title="option_pfl_minToShow" version_id="9" version_string="1.2.3"><![CDATA[Minimum of Total Threads Count]]></phrase>
+    <phrase title="option_pfl_minToShow_explain" version_id="9" version_string="1.2.3"><![CDATA[Choose here the minimum of thread count of each prefix that can be show in the prefix list.<br />
+If you set this value to 0, for example, all prefixes even with 0 threads will show the count.<br />If you set to 1, only prefixes that have thread count greater then 1 will show the thread count.<br /><b>This will only hide the thread count, not the prefix</b>]]></phrase>
     <phrase title="option_pfl_orderDirection" version_id="4" version_string="1.1.0"><![CDATA[Order Direction]]></phrase>
     <phrase title="option_pfl_orderDirection_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the order direction to order the list.]]></phrase>
-    <phrase title="option_pfl_showTotalThreads" version_id="4" version_string="1.1.0"><![CDATA[Show Total Count of Threads]]></phrase>
+    <phrase title="option_pfl_showAllLink" version_id="9" version_string="1.2.3"><![CDATA[Show "All" link]]></phrase>
+    <phrase title="option_pfl_showAllLink_explain" version_id="9" version_string="1.2.3"><![CDATA[Check this option to show a link before the prefixes list so members can go back and see all of the threads contents without the prefix filter.]]></phrase>
+    <phrase title="option_pfl_showTotalThreads" version_id="9" version_string="1.2.3"><![CDATA[Show total count of threads...]]></phrase>
     <phrase title="option_pfl_showTotalThreads_explain" version_id="4" version_string="1.1.0"><![CDATA[Check this option if you want to show the total count of threads of each prefix.]]></phrase>
     <phrase title="option_pfl_text" version_id="4" version_string="1.1.0"><![CDATA[Text to Show]]></phrase>
     <phrase title="option_pfl_text_explain" version_id="4" version_string="1.1.0"><![CDATA[This is the text to show before the prefixes list. Leave in blank to not show any text. Just the list of prefixes. <b>You may use HTML here</b>.]]></phrase>
+    <phrase title="pfl_all_link_explain" version_id="9" version_string="1.2.3"><![CDATA[Restore the thread view to forum default]]></phrase>
+    <phrase title="pfl_as_right_side_each_prefix" version_id="9" version_string="1.2.3"><![CDATA[...on the right side of each prefix]]></phrase>
+    <phrase title="pfl_as_tooltip" version_id="9" version_string="1.2.3"><![CDATA[...as a tooltip]]></phrase>
     <phrase title="pfl_click_for_specific" version_id="1" version_string="1.0.0"><![CDATA[Click for Specific Categories]]></phrase>
+    <phrase title="pfl_option_all_link_placeholder" version_id="9" version_string="1.2.3"><![CDATA[Add here the link text...]]></phrase>
     <phrase title="pfl_show_only_prefix_x" version_id="1" version_string="1.0.0"><![CDATA[Show only threads prefixed by {prefix}.]]></phrase>
+    <phrase title="pfl_show_only_the_x_prefix_y" version_id="9" version_string="1.2.3"><![CDATA[Show only the ({total}) threads prefixed by {prefix}.]]></phrase>
+    <phrase title="pfl_show_total_as_tooltip" version_id="9" version_string="1.2.3"><![CDATA[The total threads of the prefix will show as a tooltip.]]></phrase>
+    <phrase title="pfl_show_total_right_side" version_id="9" version_string="1.2.3"><![CDATA[The total threads of the prefix will be placed on the right side of the prefix.]]></phrase>
     <phrase title="style_property_discussion_list_filters_counter_description_master" version_id="7" version_string="1.2.1"><![CDATA[]]></phrase>
     <phrase title="style_property_discussion_list_filters_counter_master" version_id="7" version_string="1.2.1"><![CDATA[Prefix counter]]></phrase>
     <phrase title="style_property_discussion_list_filters_description_master" version_id="7" version_string="1.2.1"><![CDATA[]]></phrase>
@@ -136,6 +181,16 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
     <phrase title="style_property_discussion_list_filters_master" version_id="7" version_string="1.2.1"><![CDATA[Prefixes box]]></phrase>
     <phrase title="style_property_group_discussionListFilters_master" version_id="7" version_string="1.2.1"><![CDATA[Discussion List Filters]]></phrase>
     <phrase title="style_property_group_discussionListFilters_master_desc" version_id="7" version_string="1.2.1"><![CDATA[Options for the Discussion List Filters addon]]></phrase>
+    <phrase title="style_property_group_pflListPrefixStyles_master" version_id="9" version_string="1.2.3"><![CDATA[Prefix Forum Listing]]></phrase>
+    <phrase title="style_property_group_pflListPrefixStyles_master_desc" version_id="9" version_string="1.2.3"><![CDATA[Options for the Prefix Forum Listing addon]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_description_master" version_id="9" version_string="1.2.3"><![CDATA[The box that lists all prefixes.]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_filters_heading_description_master" version_id="9" version_string="1.2.3"><![CDATA[The phrase that accompanies the list of prefixes. It can be disabled in the options.]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_filters_heading_master" version_id="9" version_string="1.2.3"><![CDATA[Prefix List Phrase]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_item_description_master" version_id="9" version_string="1.2.3"><![CDATA[If you have to many prefixes in one forum you may get multiples lines and some overlapping. Set a margin-bottom to "separate" the lines (default: 7px).]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_item_master" version_id="9" version_string="1.2.3"><![CDATA[Prefix Item]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_master" version_id="9" version_string="1.2.3"><![CDATA[Prefix List Box]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_total_counter_description_master" version_id="9" version_string="1.2.3"><![CDATA[The counter of all threads that have this prefix. Go to options if you want more details.]]></phrase>
+    <phrase title="style_property_pfl_style_list_prefixes_total_counter_master" version_id="9" version_string="1.2.3"><![CDATA[Prefix total threads counter]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties>
@@ -143,54 +198,75 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
     <property property_name="discussion_list_filters_heading" property_type="css" definition="1" group_name="discussionListFilters" title="Prefixes presentation phrase" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="20" sub_group=""><![CDATA[[]]]></property>
     <property property_name="discussion_list_filters_item" property_type="css" definition="1" group_name="discussionListFilters" title="Prefix item" description="If you have to many prefixes in one forum you may get multiples lines and some overlapping. Set then a margin-bottom  to &quot;separate&quot; the lines (default: 7px)." css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="30" sub_group=""><![CDATA[{"margin-bottom":"7px"}]]></property>
     <property property_name="discussion_list_filters_counter" property_type="css" definition="1" group_name="discussionListFilters" title="Prefix counter" description="" css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="40" sub_group=""><![CDATA[[]]]></property>
+    <property property_name="pfl_style_list_prefixes" property_type="css" definition="1" group_name="pflListPrefixStyles" title="Prefix List Box" description="The box that lists all prefixes." css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="1" sub_group=""><![CDATA[{"border-radius":"5px","font-size":"11px","margin-top":"5px"}]]></property>
+    <property property_name="pfl_style_list_prefixes_filters_heading" property_type="css" definition="1" group_name="pflListPrefixStyles" title="Prefix List Phrase" description="The phrase that accompanies the list of prefixes. It can be disabled in the options." css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="10" sub_group=""><![CDATA[{"color":"@primaryLight","extra":"float: left;","font-size":"11px","font-weight":"bold","margin-right":"5px","padding-bottom":"5px"}]]></property>
+    <property property_name="pfl_style_list_prefixes_item" property_type="css" definition="1" group_name="pflListPrefixStyles" title="Prefix Item" description="If you have to many prefixes in one forum you may get multiples lines and some overlapping. Set a margin-bottom to &quot;separate&quot; the lines (default: 7px)." css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="20" sub_group=""><![CDATA[{"margin-bottom":"7px"}]]></property>
+    <property property_name="pfl_style_list_prefixes_total_counter" property_type="css" definition="1" group_name="pflListPrefixStyles" title="Prefix total threads counter" description="The counter of all threads that have this prefix. Go to options if you want more details." css_components="text,background,border,layout,extra" scalar_type="" scalar_parameters="" display_order="30" sub_group=""><![CDATA[{"extra":"display: inline-block;","font-size":"11px","width":"25px"}]]></property>
     <group group_name="discussionListFilters" display_order="9999">
       <title>Discussion List Filters</title>
       <description>Options for the Discussion List Filters addon</description>
     </group>
+    <group group_name="pflListPrefixStyles" display_order="9999">
+      <title>Prefix Forum Listing</title>
+      <description>Options for the Prefix Forum Listing addon</description>
+    </group>
   </style_properties>
   <templates>
-    <template title="listPrefixes.css" version_id="7" version_string="1.2.1"><![CDATA[.discussionListFilters
+    <template title="listPrefixes.css" version_id="9" version_string="1.2.3"><![CDATA[.prefixListPrefixes
 {
-	{xen:property discussion_list_filters}
+	{xen:property pfl_style_list_prefixes}
+
 }
 
-.discussionListFilters .filtersHeading
+.prefixListPrefixes .filtersHeading
 {
-	{xen:property discussion_list_filters_heading}
+	{xen:property pfl_style_list_prefixes_filters_heading}
 }
 
-.discussionListFilters .prefixLink span
+.prefixListPrefixes .prefixLink span
 {
-	{xen:helper cssImportant, {xen:property discussion_list_filters_item}}
+	{xen:helper cssImportant, {xen:property pfl_style_list_prefixes_item}}
 }
 
 
-.discussionListFilters .prefixTotal
+.prefixListPrefixes .prefixTotal
 {
-	{xen:property discussion_list_filters_counter}
-}
-]]></template>
-    <template title="pfl_prefixes_list" version_id="7" version_string="1.2.1"><![CDATA[<xen:if is="{$prefixes}">
+	{xen:property pfl_style_list_prefixes_total_counter}
+}]]></template>
+    <template title="pfl_prefixes_list" version_id="9" version_string="1.2.3"><![CDATA[<xen:if is="{$prefixes}">
         <xen:require css="listPrefixes.css" />
-	<div class="discussionListFilters secondaryContent">
-		<xen:if is="{$xenOptions.pfl_text}">
-		    <h3 class="filtersHeading">{xen:raw {$xenOptions.pfl_text}}</h3>
-		</xen:if>
-		<tr>
-		    <xen:foreach loop="$prefixes" value="$prefix">
-		        <td>
-			    &nbsp;
-                            <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}
-			        <xen:if is="{$xenOptions.pfl_showTotalThreads}">
-				    {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', '<span class="prefixTotal">({$prefix.totalThreads})</span>'}
-				</xen:if>
-                            </a>
-			</td>
-		    </xen:foreach>
-		</tr>
-	</div>
-</xen:if>]]></template>
+    <div class="prefixListPrefixes secondaryContent">
+        <xen:if is="{$xenOptions.pfl_text}">
+            <h3 class="filtersHeading">{xen:raw {$xenOptions.pfl_text}}</h3>
+        </xen:if>
+        <tr>
+            <td>
+                <xen:if is="{$xenOptions.pfl_showAllLink} && {$xenOptions.pfl_showAllLink.linktext} != ''">
+                    <a href="{xen:link forums, $forum}" class="prefixLink" title="{xen:phrase pfl_all_link_explain}">
+                        <span class="prefixAll">{$xenOptions.pfl_showAllLink.linktext}</span>
+                    </a> 
+                </xen:if>
+            </td>
+            <xen:foreach loop="$prefixes" value="$prefix">
+                <td>
+                    <xen:if is="{$xenOptions.pfl_showTotalThreads} != ''">
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink {xen:if "{$xenOptions.pfl_showTotalThreads} == 'Tooltip'", 'Tooltip'}" title="{xen:if "{$xenOptions.pfl_showTotalThreads} == 'rightside'", {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', {xen:phrase pfl_show_only_the_x_prefix_y, 'total={$prefix.totalThreads}', 'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}}}">{xen:helper threadPrefix, $prefix, html, ''}
+                            <xen:if is="{$xenOptions.pfl_showTotalThreads} == 'rightside'">
+                                {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', '<span class="prefixTotal">({$prefix.totalThreads})</span>'}
+                            </xen:if>
+                        </a>
+                    <xen:else />
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}</a>
+                    </xen:if>
+                </td>
+            </xen:foreach>
+        </tr>
+    </div>
+</xen:if>
+
+
+]]></template>
   </templates>
+  <public_template_modifications/>
   <bb_code_media_sites/>
-  <template_modifications/>
 </addon>

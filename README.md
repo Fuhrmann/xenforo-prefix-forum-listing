@@ -1,10 +1,25 @@
-# [Prefix Forum Listing](http://xenforo.com/community/resources/thread-prefix-listing.80) - Shows a list of prefixes in each forum
+### [Prefix Forum Listing](http://xenforo.com/community/resources/thread-prefix-listing.80/) - Shows a list of prefixes in each forum
 
-This is an addon for the forum software [XenForo](http://www.xenforo.com).
+This is an addon for the forum software [XenForo](http://www.xenforo.com). Compatible versions: 1.2.x and 1.3 Beta
 
 <b>What it does:</b> Shows a list of prefixes in each forum that has prefixes.
 
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
+Go to Appearance -> Styles Properties -> Prefix Forum Listing to set some styles to customize the output!
+
+## 1.2.3
+
+To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.
+
+Fixes:
+- Fix to work with XenForo 1.2.*
+- Fix some bugs on sorting prefixes
+- Fix permissions
+
+New:
+- Added an option to show a link before all the prefixes and select the text to show. The link is just a shortcut to clean the thread prefix filter. (thanks @Code Monkey!)
+- Added an option to choose to show the total threads count as Tooltip. (thanks @Code Monkey!)
+- Added style properties to control the style of the list
 
 ## 1.2.2
 Fixes:

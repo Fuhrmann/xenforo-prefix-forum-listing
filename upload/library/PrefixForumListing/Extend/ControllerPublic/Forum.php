@@ -2,189 +2,195 @@
 
 class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumListing_Extend_ControllerPublic_Forum
 {
-	public function actionForum()
-	{
-		$response = parent::actionForum();
+    public function actionForum()
+    {
+        $response = parent::actionForum();
 
-		if ($this->_routeMatch->getResponseType() == 'rss')
-		{
-			return $response;
-		}
+        if ($this->_routeMatch->getResponseType() == 'rss')
+        {
+            return $response;
+        }
 
-		/* Get the user browsing this page */
-		$viewingUser = XenForo_Visitor::getInstance()->toArray();
+        /* Get the user browsing this page */
+        $viewingUser = XenForo_Visitor::getInstance()->toArray();
 
-		/* Get the options */
-		$options = XenForo_Application::get('options');
+        /* Get the options */
+        $options = XenForo_Application::get('options');
 
-		/* Get the forum data */
-		$forumId = $this->_input->filterSingle('node_id', XenForo_Input::UINT);
-		$forumName = $this->_input->filterSingle('node_name', XenForo_Input::STRING);
+        /* Get the forum data */
+        $forumId = $this->_input->filterSingle('node_id', XenForo_Input::UINT);
+        $forumName = $this->_input->filterSingle('node_name', XenForo_Input::STRING);
 
-		if(!$forumId && !$forumName)
-		{
-			return $response;
-		}
-		
-		$forum = $this->getHelper('ForumThreadPost')->assertForumValidAndViewable(
-			$forumId ? $forumId : $forumName,
-			$this->_getForumFetchOptions()
-		);
-		$forumId = $forum['node_id'];
+        if(!$forumId && !$forumName)
+        {
+            return $response;
+        }
 
-		$prefixModel = $this->_getThreadPrefixModel();
-		$prefixesIds = array();
+        $forum = $this->getHelper('ForumThreadPost')->assertForumValidAndViewable(
+            $forumId ? $forumId : $forumName,
+            $this->_getForumFetchOptions()
+        );
+        $forumId = $forum['node_id'];
 
-		$cache = false;
+        $prefixModel = $this->_getThreadPrefixModel();
+        $prefixesIds = array();
 
-		/* Try to get the total thread count of each prefix in the cache */
-		$totalThreadsCache = $this->_getDataRegistryModel()->get('PrefixesThreadsCount'.$forumId);
+        $cache = false;
 
-		if (!in_array($forumId, $options->pfl_display_in_forums) && !in_array($forum['parent_node_id'], $options->pfl_display_in_forums))
-		{
-			return $response;
-		}
-		
-		// Get all prefixes of this forum from cache
-		$prefixIdCache = $forum['prefixCache'];
+        /* Try to get the total thread count of each prefix in the cache */
+        $totalThreadsCache = $this->_getDataRegistryModel()->get('PrefixesThreadsCount'.$forumId);
 
-		/* If this forum has any prefix*/
-		if (!$prefixIdCache)
-		{
-			return $response;
-		}	
-			
-		// Lets get all id's
-		foreach ($prefixIdCache as $key => $prefixes)
-		{
-			foreach ($prefixes as $key => $prefix)
-			{
-				$prefixesIds[] = $prefix;
-			}
-		}
+        if (!in_array($forumId, $options->pfl_display_in_forums) && !in_array($forum['parent_node_id'], $options->pfl_display_in_forums))
+        {
+            return $response;
+        }
 
-		// if the user wants to limit the ammount of prefix...lets do it!
-		$limit = array();
+        // Get all prefixes of this forum from cache
+        $prefixIdCache = $forum['prefixCache'];
 
-		if ($options->pfl_ammount > 0)
-		{
-			$limit = array('limit' => $options->pfl_ammount);
-		}
+        /* If this forum has any prefix*/
+        if (!$prefixIdCache)
+        {
+            return $response;
+        }
 
-		// Get all prefixes in one time only (1 query)
-		$prefixes = $prefixModel->getPrefixes(array('prefix_ids' => $prefixesIds), $limit);
+        // Lets get all id's
+        foreach ($prefixIdCache as $key => $prefixes)
+        {
+            foreach ($prefixes as $key => $prefix)
+            {
+                $prefixesIds[] = $prefix;
+            }
+        }
 
-		foreach ($prefixes as $key => &$prefix)
-		{
-			// verify if the current browsing user can see this prefix
-			$userGroups = explode(',', $prefix['allowed_user_group_ids']);
-			if (in_array(-1, $userGroups) || in_array($viewingUser['user_group_id'], $userGroups))
-			{
-				// available to all groups or the primary group
-			}
-			elseif ($viewingUser['secondary_group_ids'])
-			{
-				foreach (explode(',', $viewingUser['secondary_group_ids']) AS $userGroupId)
-				{
-					if (!in_array($userGroupId, $userGroups))
-					{
-						// Do not have permission to see this prefix
-						unset($prefixes[$key]);
-					}
-				}
-			}
+        // if the user wants to limit the ammount of prefix...lets do it!
+        $limit = array();
 
-			/* If there is nothing (threads count) in the cache for this prefix */
-			if (!isset($totalThreadsCache[$prefix['prefix_id']]))
-			{
-				$cache = true;
+        if ($options->pfl_ammount > 0)
+        {
+            $limit = array('limit' => $options->pfl_ammount);
+        }
 
-				/* Count threads*/
-				$threadFetchOptions = array(
-					'prefix_id' => $prefix['prefix_id'],
-					'deleted' =>  false,
-					'moderated' => false
-				);
-				$totalThreads = $this->_getThreadModel()->countThreadsInForum($forumId, $threadFetchOptions);
+        // Get all prefixes in one time only (1 query)
+        $prefixes = $prefixModel->getPrefixes(array('prefix_ids' => $prefixesIds), $limit);
 
-				/* Cache total threads */
-				$totalThreadsCache[$prefix['prefix_id']] = $totalThreads;
+        foreach ($prefixes as $key => &$prefix)
+        {
+            // verify if the current browsing user can see this prefix
+            $userGroups = explode(',', $prefix['allowed_user_group_ids']);
+            if (in_array(-1, $userGroups) || in_array($viewingUser['user_group_id'], $userGroups))
+            {
+                // available to all groups or the primary group
+            }
+            elseif ($viewingUser['secondary_group_ids'])
+            {
+                $viewPermissionResult = false;
+                foreach (explode(',', $viewingUser['secondary_group_ids']) as $userGroupId)
+                {
+                    if (in_array($userGroupId, $userGroups))
+                    {
+                        $viewPermissionResult = true;
+                    }
+                }
 
-				/* Verify if the user wants to show all threads or only with some ammount */
-				if ($options->pfl_donotshow_totalthreads > 0)
-				{
-					/* If the total threads of this prefix is < of the option set, we dont want to show it */
-					if ($totalThreads < $options->pfl_donotshow_totalthreads)
-					{
-						unset($prefixes[$key]);
-					}
-				}
+                if (!$viewPermissionResult) {
+                    // Do not have permission to see this prefix
+                    unset($prefixes[$key]);
+                }
+            } elseif (!in_array($viewingUser['user_group_id'], $userGroups)) {
+                unset($prefixes[$key]);
+            }
 
-				/* Set the total threads */
-				$prefix['totalThreads'] = $totalThreads;
-			}
-			else
-			{
-				/* Verify if the user wants to show all threads or only with some ammount */
-				if ($options->pfl_donotshow_totalthreads > 0)
-				{
-					/* If the total threads (cache) of this prefix is < of the option set, we dont want to show it */
-					if ($totalThreadsCache[$prefix['prefix_id']] < $options->pfl_donotshow_totalthreads)
-					{
-						unset($prefixes[$key]);
-					}
-				}
+            /* If there is nothing (threads count) in the cache for this prefix */
+            if (!isset($totalThreadsCache[$prefix['prefix_id']]))
+            {
+                $cache = true;
 
-				$prefix['totalThreads'] = $totalThreadsCache[$prefix['prefix_id']];
-			}
+                /* Count threads*/
+                $threadFetchOptions = array(
+                    'prefix_id' => $prefix['prefix_id'],
+                    'deleted' =>  false,
+                    'moderated' => false
+                );
+                $totalThreads = $this->_getThreadModel()->countThreadsInForum($forumId, $threadFetchOptions);
 
-			$prefix = $this->_getThreadPrefixModel()->preparePrefix($prefix);
-			$totalThreads = 0;
-		}
+                /* Cache total threads */
+                $totalThreadsCache[$prefix['prefix_id']] = $totalThreads;
 
-		/* Update the cache! */
-		if ($cache)
-		{
-			$this->_getDataRegistryModel()->set('PrefixesThreadsCount'.$forumId, $totalThreadsCache);
-		}
+                /* Verify if the user wants to show all threads or only with some ammount */
+                if ($options->pfl_donotshow_totalthreads > 0)
+                {
+                    /* If the total threads of this prefix is < of the option set, we dont want to show it */
+                    if ($totalThreads < $options->pfl_donotshow_totalthreads)
+                    {
+                        unset($prefixes[$key]);
+                    }
+                }
 
-		//Sort the prefixes
-		$this->_getPrefixListingModel()->multi_sort($prefixes, $options->pfl_display_order, $options->pfl_orderDirection);
-		$response->params['prefixes'] = $prefixes;
+                /* Set the total threads */
+                $prefix['totalThreads'] = $totalThreads;
+            }
+            else
+            {
+                /* Verify if the user wants to show all threads or only with some ammount */
+                if ($options->pfl_donotshow_totalthreads > 0)
+                {
+                    /* If the total threads (cache) of this prefix is < of the option set, we dont want to show it */
+                    if ($totalThreadsCache[$prefix['prefix_id']] < $options->pfl_donotshow_totalthreads)
+                    {
+                        unset($prefixes[$key]);
+                    }
+                }
 
-		return $response;
-	}
+                $prefix['totalThreads'] = $totalThreadsCache[$prefix['prefix_id']];
+            }
 
-	/**
-	 * @return PrefixForumListing_Model_PrefixListing
-	 */
-	protected function _getPrefixListingModel()
-	{
-		return $this->getModelFromCache('PrefixForumListing_Model_PrefixListing');
-	}
+            $prefix = $this->_getThreadPrefixModel()->preparePrefix($prefix);
+            $totalThreads = 0;
+        }
 
-	/**
-	 * @return XenForo_Model_ThreadPrefix
-	 */
-	protected function _getThreadPrefixModel()
-	{
-		return $this->getModelFromCache('XenForo_Model_ThreadPrefix');
-	}
+        /* Update the cache! */
+        if ($cache)
+        {
+            $this->_getDataRegistryModel()->set('PrefixesThreadsCount'.$forumId, $totalThreadsCache);
+        }
 
-	/**
-	 * @return XenForo_Model_Thread
-	 */
-	protected function _getThreadModel()
-	{
-		return $this->getModelFromCache('XenForo_Model_Thread');
-	}
+        //Sort the prefixes
+        $this->_getPrefixListingModel()->multi_sort($prefixes, $options->pfl_display_order, $options->pfl_orderDirection);
+        $response->params['prefixes'] = $prefixes;
 
-	/**
-	 * @return XenForo_Model_DataRegistry
-	 */
-	protected function _getDataRegistryModel()
-	{
-		return $this->getModelFromCache('XenForo_Model_DataRegistry');
-	}
+        return $response;
+    }
+
+    /**
+     * @return PrefixForumListing_Model_PrefixListing
+     */
+    protected function _getPrefixListingModel()
+    {
+        return $this->getModelFromCache('PrefixForumListing_Model_PrefixListing');
+    }
+
+    /**
+     * @return XenForo_Model_ThreadPrefix
+     */
+    protected function _getThreadPrefixModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_ThreadPrefix');
+    }
+
+    /**
+     * @return XenForo_Model_Thread
+     */
+    protected function _getThreadModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_Thread');
+    }
+
+    /**
+     * @return XenForo_Model_DataRegistry
+     */
+    protected function _getDataRegistryModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_DataRegistry');
+    }
 }
-
