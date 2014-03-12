@@ -7,6 +7,13 @@ This is an addon for the forum software [XenForo](http://www.xenforo.com). Compa
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
 Go to Appearance -> Styles Properties -> Prefix Forum Listing to set some styles to customize the output!
 
+## 1.2.3a
+
+To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.
+
+Fixes:
+- Fix to work with PHP 5.2
+
 ## 1.2.3
 
 To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.

@@ -12,15 +12,17 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
      */
     public $key;
     public $signal;
+    public $direction;
 
     public function multi_sort(&$prefixes, $key, $direction)
     {
         $this->key = $key;
-        $this->signal = ($direction == 'asc') ? 'greater_then' : 'less_then';
+        $this->direction = $direction;
+        $this->signal = ($this->direction == 'asc') ? 'greater_then' : 'less_then';
 
         if($key == 'title')
         {
-            usort($prefixes, $this->sortByKey('title', $direction));
+            usort($prefixes, array($this, 'sortByKey'));
         }
         else
         {
@@ -34,12 +36,10 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
         return (ord(substr(strtolower($a),0,1)) < ord(substr(strtolower($b),0,1))) ? -1 : 1;
     }
 
-    public function sortByKey($key, $direction)
+    public function sortByKey($a, $b)
     {
-        return function ($a, $b) use ($key, $direction) {
-            $direction = $direction == 'asc' ? 1 : -1;
-            return $direction * strnatcmp($a[$key], $b[$key]);
-        };
+        $direction = $this->direction == 'asc' ? 1 : -1;
+        return $direction * strnatcmp($a[$this->key], $b[$this->key]);
     }
 
     public function sort($a, $b)

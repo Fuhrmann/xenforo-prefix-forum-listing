@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.3" version_id="9" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.3a" version_id="10" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
