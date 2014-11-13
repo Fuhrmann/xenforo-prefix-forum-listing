@@ -1,6 +1,6 @@
-### [Prefix Forum Listing](http://xenforo.com/community/resources/thread-prefix-listing.80/) - Shows a list of prefixes in each forum
+# [Prefix Forum Listing](http://xenforo.com/community/resources/thread-prefix-listing.80/) <img align="left" src="logo.png" width="40" height="40" />
 
-This is an addon for the forum software [XenForo](http://www.xenforo.com). Compatible versions: 1.2.x and 1.3 Beta
+This is an addon for the forum software [XenForo](http://www.xenforo.com). Compatible versions: 1.2, 1.3 and 1.4
 
 <b>What it does:</b> Shows a list of prefixes in each forum that has prefixes.
 
