@@ -6,6 +6,13 @@ This is an addon for the forum software [XenForo](http://www.xenforo.com). Compa
 
 Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customize the output!
 Go to Appearance -> Styles Properties -> Prefix Forum Listing to set some styles to customize the output!
+Go to Tools -> Rebuild Cache to clean the cache built by this addon!
+
+## 1.2.4
+
+To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.
+
+- Bugfixes and added option to clean the cache built by the addon. Go to Tools > Rebuild Caches and see at the bottom.
 
 ## 1.2.3a
 
@@ -56,12 +63,10 @@ This is the 5º version of this addon. Released in 16/02/2012.
 
 The current version is: 1.1.0 build 2
 
-
 Fixes:
 - Global RSS feed was not working when the addon was actived.
 - Total counts was being displayed wrong.
 - Cache problems.
-
 
 ## 1.1.0
 
@@ -85,8 +90,6 @@ New:
 - Ammount of Prefixes - Set the ammount of prefixes to show. With this option you can limit the ammount of prefixes by what you want. If you set this option to 5, only 5 prefixes will me shown in the list. Set 0 to unlimited prefixes.
 - Cache the ammount of threads of each prefix. Everytime a new threads with prefix X is created only the cache of that prefix is rebuilt. This helps to do less queries when listing the prefixes.
 
-
-
 ## 1.0.0 build 2
 
 - Choose the forums to show the prefix list.
@@ -95,8 +98,6 @@ New:
 - Prefixes only show if:
 a) has some threads with it
 b) usergroup of the user can use the prefix
-
-
 
 ## 1.0.0 build 1
 

@@ -10,8 +10,15 @@ class PrefixForumListing_Listener
             $viewParams = array_merge($templateParams, $hookParams);
             $ourTemplate = $template->create('pfl_prefixes_list', $viewParams);
             $rendered = $ourTemplate->render();
-            $contents .= $rendered;
+            $contents = $contents . $rendered;
         }
+    }
+    
+    public static function templateRebuildTools($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
+    {
+        $ourTemplate = $template->create('pfl_clean_cache');
+
+        $content .= $ourTemplate;
     }
 
     public static function extendDatawriterDiscussionThread($class, array &$extend)
@@ -22,5 +29,10 @@ class PrefixForumListing_Listener
     public static function extendControllerPublicForum($class, array &$extend)
     {
         $extend[] = 'PrefixForumListing_Extend_ControllerPublic_Forum';
+    }
+
+    public static function extendControllerAdminTools($class, array &$extend)
+    {
+        $extend[] = 'PrefixForumListing_Extend_ControllerAdmin_Tools';
     }
 }

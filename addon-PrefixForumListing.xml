@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.3a" version_id="10" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="" install_callback_method="" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.4" version_id="11" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="PrefixForumListing_Installer" install_callback_method="install" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -31,6 +31,12 @@ $(function()
 	    	</xen:html>
 	</xen:selectunit>
 </fieldset>]]></template>
+    <template title="pfl_clean_cache"><![CDATA[<xen:form action="{xen:adminlink 'tools/clean-prefix-listing-cache'}">
+	<h2 class="subHeading">{xen:phrase pfl_clean_up_cache}</h2>
+	<p class="section">{xen:phrase pfl_clean_cache}</p>
+
+	<xen:submitunit save="{xen:phrase run}" />
+</xen:form>]]></template>
     <template title="pfl_option_all_link"><![CDATA[<xen:checkboxunit label="" hint="{$preparedOption.hint}">
 	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}">
 		<xen:label>{$preparedOption.title}</xen:label>
@@ -63,8 +69,10 @@ $(function()
   <code_events/>
   <code_event_listeners>
     <listener event_id="load_class_controller" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extendControllerPublicForum" active="1" hint="XenForo_ControllerPublic_Forum" description="XenForo_ControllerPublic_Forum"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extendControllerAdminTools" active="1" hint="XenForo_ControllerAdmin_Tools" description=""/>
     <listener event_id="load_class_datawriter" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="extendDatawriterDiscussionThread" active="1" hint="XenForo_DataWriter_Discussion_Thread" description="XenForo_DataWriter_Discussion_Thread"/>
-    <listener event_id="template_hook" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="templateHookForumPageNavBefore" active="1" hint="forum_view_pagenav_before" description="forum_view_pagenav_before"/>
+    <listener event_id="template_hook" execute_order="9999" callback_class="PrefixForumListing_Listener" callback_method="templateHookForumPageNavBefore" active="1" hint="forum_view_pagenav_before" description="forum_view_pagenav_before"/>
+    <listener event_id="template_post_render" execute_order="10" callback_class="PrefixForumListing_Listener" callback_method="templateRebuildTools" active="1" hint="tools_rebuild" description=""/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -165,6 +173,8 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
     <phrase title="pfl_all_link_explain" version_id="9" version_string="1.2.3"><![CDATA[Restore the thread view to forum default]]></phrase>
     <phrase title="pfl_as_right_side_each_prefix" version_id="9" version_string="1.2.3"><![CDATA[...on the right side of each prefix]]></phrase>
     <phrase title="pfl_as_tooltip" version_id="9" version_string="1.2.3"><![CDATA[...as a tooltip]]></phrase>
+    <phrase title="pfl_clean_cache" version_id="11" version_string="1.2.4"><![CDATA[This will clean up the cache created by the Prefix Forum Listing addon.]]></phrase>
+    <phrase title="pfl_clean_up_cache" version_id="11" version_string="1.2.4"><![CDATA[Clean Up Prefix Forum Listing cache]]></phrase>
     <phrase title="pfl_click_for_specific" version_id="1" version_string="1.0.0"><![CDATA[Click for Specific Categories]]></phrase>
     <phrase title="pfl_option_all_link_placeholder" version_id="9" version_string="1.2.3"><![CDATA[Add here the link text...]]></phrase>
     <phrase title="pfl_show_only_prefix_x" version_id="1" version_string="1.0.0"><![CDATA[Show only threads prefixed by {prefix}.]]></phrase>
@@ -212,7 +222,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
     </group>
   </style_properties>
   <templates>
-    <template title="listPrefixes.css" version_id="9" version_string="1.2.3"><![CDATA[.prefixListPrefixes
+    <template title="listPrefixes.css" version_id="11" version_string="1.2.4"><![CDATA[.prefixListPrefixes
 {
 	{xen:property pfl_style_list_prefixes}
 
@@ -221,6 +231,11 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
 .prefixListPrefixes .filtersHeading
 {
 	{xen:property pfl_style_list_prefixes_filters_heading}
+}
+
+.prefixListPrefixes .prefixLink
+{
+    white-space: nowrap;
 }
 
 .prefixListPrefixes .prefixLink span
@@ -233,7 +248,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
 {
 	{xen:property pfl_style_list_prefixes_total_counter}
 }]]></template>
-    <template title="pfl_prefixes_list" version_id="9" version_string="1.2.3"><![CDATA[<xen:if is="{$prefixes}">
+    <template title="pfl_prefixes_list" version_id="11" version_string="1.2.4"><![CDATA[<xen:if is="{$prefixes}">
         <xen:require css="listPrefixes.css" />
     <div class="prefixListPrefixes secondaryContent">
         <xen:if is="{$xenOptions.pfl_text}">
@@ -263,10 +278,9 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
         </tr>
     </div>
 </xen:if>
-
-
 ]]></template>
   </templates>
   <public_template_modifications/>
   <bb_code_media_sites/>
+  <bb_codes/>
 </addon>

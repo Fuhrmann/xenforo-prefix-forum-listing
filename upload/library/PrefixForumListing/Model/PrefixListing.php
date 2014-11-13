@@ -13,6 +13,8 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
     public $key;
     public $signal;
     public $direction;
+    public $cacheKey = 'PrefixesThreadsCount';
+
 
     public function multi_sort(&$prefixes, $key, $direction)
     {
@@ -62,5 +64,62 @@ class PrefixForumListing_Model_PrefixListing extends XenForo_Model
         {
             return 1;
         }
+    }
+
+    /**
+     * Clear cache of a specific forum or prefix.
+     *
+     * @param int $forumId Forum ID
+     * @param int $prefixId Prefix ID
+     */
+    public function cleanPrefixCache($forumId = null, $prefixId = null)
+    {
+        $dataRegistryModel = $this->_getDataRegistryModel();
+        $cache = $dataRegistryModel->get($this->cacheKey);
+
+        if (isset($prefixId))
+        {
+            $cache[$forumId][$prefixId] = null;
+        }
+        else if (isset($forumId))
+        {
+            $cache[$forumId] = null;
+        }
+        else
+        {
+            $cache = null;
+        }
+
+        $dataRegistryModel->set($this->cacheKey, $cache);
+    }
+    
+    public function getTotalThreadsCacheForum($forumId)
+    {
+        $dataRegistryModel = $this->_getDataRegistryModel();
+        $cache = $dataRegistryModel->get($this->cacheKey);
+
+        if (isset($cache[$forumId]))
+        {
+            return $cache[$forumId];
+        }
+
+        return array();
+    }
+
+    public function updateThreadCountCache($forumId, $threadCount)
+    {
+        $dataRegistryModel = $this->_getDataRegistryModel();
+        $cache = $dataRegistryModel->get($this->cacheKey);
+
+        $cache[$forumId] = $threadCount;
+        $dataRegistryModel->set($this->cacheKey, $cache);
+    }
+
+    /**
+     * @return XenForo_Model_DataRegistry
+     */
+    protected function _getDataRegistryModel()
+    {
+        return $this->getModelFromCache('XenForo_Model_DataRegistry');
     }
 }
