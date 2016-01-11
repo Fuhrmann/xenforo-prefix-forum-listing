@@ -146,8 +146,8 @@ linktext</sub_options>
   <phrases>
     <phrase title="option_group_prefixForumListing" version_id="1" version_string="1.0.0"><![CDATA[Prefix Forum Listing]]></phrase>
     <phrase title="option_group_prefixForumListing_description" version_id="1" version_string="1.0.0"><![CDATA[Some options of the add-on Prefix Forum Listing.]]></phrase>
-    <phrase title="option_pfl_ammount" version_id="4" version_string="1.1.0"><![CDATA[Ammount of Prefixes]]></phrase>
-    <phrase title="option_pfl_ammount_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the ammount of prefixes to show. With this option you can limit the ammount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
+    <phrase title="option_pfl_ammount" version_id="12" version_string="1.2.5"><![CDATA[Amount of Prefixes]]></phrase>
+    <phrase title="option_pfl_ammount_explain" version_id="12" version_string="1.2.5"><![CDATA[Set the amount of prefixes to show. With this option you can limit the amount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
     <phrase title="option_pfl_asc" version_id="7" version_string="1.2.1"><![CDATA[ASC]]></phrase>
     <phrase title="option_pfl_by_display_order" version_id="7" version_string="1.2.1"><![CDATA[by Display Order]]></phrase>
     <phrase title="option_pfl_by_title" version_id="7" version_string="1.2.1"><![CDATA[by Title]]></phrase>
