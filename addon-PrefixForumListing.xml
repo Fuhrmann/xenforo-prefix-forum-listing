@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.4" version_id="11" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="PrefixForumListing_Installer" install_callback_method="install" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.5" version_id="12" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="PrefixForumListing_Installer" install_callback_method="install" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -119,7 +119,7 @@ desc = {xen:phrase option_pfl_desc}</edit_format_params>
       <relation group_id="prefixForumListing" display_order="25"/>
     </option>
     <option option_id="pfl_showAllLink" edit_format="template" data_type="array" can_backup="1">
-      <default_value>a:3:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
+      <default_value>a:2:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
       <edit_format_params>pfl_option_all_link</edit_format_params>
       <sub_options>enabled
 linktext</sub_options>
@@ -146,8 +146,8 @@ linktext</sub_options>
   <phrases>
     <phrase title="option_group_prefixForumListing" version_id="1" version_string="1.0.0"><![CDATA[Prefix Forum Listing]]></phrase>
     <phrase title="option_group_prefixForumListing_description" version_id="1" version_string="1.0.0"><![CDATA[Some options of the add-on Prefix Forum Listing.]]></phrase>
-    <phrase title="option_pfl_ammount" version_id="4" version_string="1.1.0"><![CDATA[Ammount of Prefixes]]></phrase>
-    <phrase title="option_pfl_ammount_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the ammount of prefixes to show. With this option you can limit the ammount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
+    <phrase title="option_pfl_ammount" version_id="12" version_string="1.2.5"><![CDATA[Amount of Prefixes]]></phrase>
+    <phrase title="option_pfl_ammount_explain" version_id="12" version_string="1.2.5"><![CDATA[Set the amount of prefixes to show. With this option you can limit the amount of prefixes by what you want.<br/>If you set this option to 5, only 5 prefixes will me shown in the list.<br/><b>Set 0 to unlimited prefixes</b>.]]></phrase>
     <phrase title="option_pfl_asc" version_id="7" version_string="1.2.1"><![CDATA[ASC]]></phrase>
     <phrase title="option_pfl_by_display_order" version_id="7" version_string="1.2.1"><![CDATA[by Display Order]]></phrase>
     <phrase title="option_pfl_by_title" version_id="7" version_string="1.2.1"><![CDATA[by Title]]></phrase>
@@ -248,7 +248,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
 {
 	{xen:property pfl_style_list_prefixes_total_counter}
 }]]></template>
-    <template title="pfl_prefixes_list" version_id="11" version_string="1.2.4"><![CDATA[<xen:if is="{$prefixes}">
+    <template title="pfl_prefixes_list" version_id="12" version_string="1.2.5"><![CDATA[<xen:if is="{$prefixes}">
         <xen:require css="listPrefixes.css" />
     <div class="prefixListPrefixes secondaryContent">
         <xen:if is="{$xenOptions.pfl_text}">
@@ -257,7 +257,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
         <tr>
             <td>
                 <xen:if is="{$xenOptions.pfl_showAllLink} && {$xenOptions.pfl_showAllLink.linktext} != ''">
-                    <a href="{xen:link forums, $forum}" class="prefixLink" title="{xen:phrase pfl_all_link_explain}">
+                    <a href="{xen:link forums, $forum}" class="prefixLink Tooltip" title="{xen:phrase pfl_all_link_explain}">
                         <span class="prefixAll">{$xenOptions.pfl_showAllLink.linktext}</span>
                     </a> 
                 </xen:if>
@@ -265,13 +265,13 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
             <xen:foreach loop="$prefixes" value="$prefix">
                 <td>
                     <xen:if is="{$xenOptions.pfl_showTotalThreads} != ''">
-                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink {xen:if "{$xenOptions.pfl_showTotalThreads} == 'Tooltip'", 'Tooltip'}" title="{xen:if "{$xenOptions.pfl_showTotalThreads} == 'rightside'", {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', {xen:phrase pfl_show_only_the_x_prefix_y, 'total={$prefix.totalThreads}', 'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}}}">{xen:helper threadPrefix, $prefix, html, ''}
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink Tooltip" title="{xen:if "{$xenOptions.pfl_showTotalThreads} == 'rightside'", {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', {xen:phrase pfl_show_only_the_x_prefix_y, 'total={$prefix.totalThreads}', 'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}}}">{xen:helper threadPrefix, $prefix, html, ''}
                             <xen:if is="{$xenOptions.pfl_showTotalThreads} == 'rightside'">
                                 {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', '<span class="prefixTotal">({$prefix.totalThreads})</span>'}
                             </xen:if>
                         </a>
                     <xen:else />
-                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}</a>
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink Tooltip" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}</a>
                     </xen:if>
                 </td>
             </xen:foreach>
