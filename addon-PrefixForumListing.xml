@@ -248,7 +248,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
 {
 	{xen:property pfl_style_list_prefixes_total_counter}
 }]]></template>
-    <template title="pfl_prefixes_list" version_id="11" version_string="1.2.4"><![CDATA[<xen:if is="{$prefixes}">
+    <template title="pfl_prefixes_list" version_id="12" version_string="1.2.5"><![CDATA[<xen:if is="{$prefixes}">
         <xen:require css="listPrefixes.css" />
     <div class="prefixListPrefixes secondaryContent">
         <xen:if is="{$xenOptions.pfl_text}">
@@ -257,7 +257,7 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
         <tr>
             <td>
                 <xen:if is="{$xenOptions.pfl_showAllLink} && {$xenOptions.pfl_showAllLink.linktext} != ''">
-                    <a href="{xen:link forums, $forum}" class="prefixLink" title="{xen:phrase pfl_all_link_explain}">
+                    <a href="{xen:link forums, $forum}" class="prefixLink Tooltip" title="{xen:phrase pfl_all_link_explain}">
                         <span class="prefixAll">{$xenOptions.pfl_showAllLink.linktext}</span>
                     </a> 
                 </xen:if>
@@ -265,13 +265,13 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
             <xen:foreach loop="$prefixes" value="$prefix">
                 <td>
                     <xen:if is="{$xenOptions.pfl_showTotalThreads} != ''">
-                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink {xen:if "{$xenOptions.pfl_showTotalThreads} == 'Tooltip'", 'Tooltip'}" title="{xen:if "{$xenOptions.pfl_showTotalThreads} == 'rightside'", {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', {xen:phrase pfl_show_only_the_x_prefix_y, 'total={$prefix.totalThreads}', 'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}}}">{xen:helper threadPrefix, $prefix, html, ''}
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink Tooltip" title="{xen:if "{$xenOptions.pfl_showTotalThreads} == 'rightside'", {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', {xen:phrase pfl_show_only_the_x_prefix_y, 'total={$prefix.totalThreads}', 'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}, {xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}}}">{xen:helper threadPrefix, $prefix, html, ''}
                             <xen:if is="{$xenOptions.pfl_showTotalThreads} == 'rightside'">
                                 {xen:if '{$prefix.totalThreads} >= {$xenOptions.pfl_minToShow}', '<span class="prefixTotal">({$prefix.totalThreads})</span>'}
                             </xen:if>
                         </a>
                     <xen:else />
-                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}</a>
+                        <a href="{xen:link forums, $forum, 'prefix_id={$prefix.prefix_id}'}" class="prefixLink Tooltip" title="{xen:phrase pfl_show_only_prefix_x,'prefix={xen:helper threadPrefix, $prefix, escaped, ''}'}">{xen:helper threadPrefix, $prefix, html, ''}</a>
                     </xen:if>
                 </td>
             </xen:foreach>
