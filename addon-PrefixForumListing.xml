@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.4" version_id="11" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="PrefixForumListing_Installer" install_callback_method="install" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
+<addon addon_id="PrefixForumListing" title="Prefix Forum Listing" version_string="1.2.5" version_id="12" url="http://xenforo.com/community/resources/thread-prefix-listing.80/" install_callback_class="PrefixForumListing_Installer" install_callback_method="install" uninstall_callback_class="PrefixForumListing_Uninstaller" uninstall_callback_method="uninstall">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
@@ -119,7 +119,7 @@ desc = {xen:phrase option_pfl_desc}</edit_format_params>
       <relation group_id="prefixForumListing" display_order="25"/>
     </option>
     <option option_id="pfl_showAllLink" edit_format="template" data_type="array" can_backup="1">
-      <default_value>a:3:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
+      <default_value>a:2:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
       <edit_format_params>pfl_option_all_link</edit_format_params>
       <sub_options>enabled
 linktext</sub_options>
