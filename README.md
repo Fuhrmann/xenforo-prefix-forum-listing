@@ -8,6 +8,14 @@ Go to AdminCP -> Options -> Prefix Forum Listing to set some options to customiz
 Go to Appearance -> Styles Properties -> Prefix Forum Listing to set some styles to customize the output!
 Go to Tools -> Rebuild Cache to clean the cache built by this addon!
 
+## 1.2.5
+
+To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.
+
+Fixes:
+- XenForo 1.5.4 compatibility.
+- Consistently tooltip css.
+
 ## 1.2.4
 
 To upgrade just copy the new folder and overwrite the old folder and upgrade the add-on using the new .xml in the .zip file.
