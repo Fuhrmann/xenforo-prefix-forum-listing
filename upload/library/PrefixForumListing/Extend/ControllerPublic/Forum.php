@@ -77,8 +77,14 @@ class PrefixForumListing_Extend_ControllerPublic_Forum extends XFCP_PrefixForumL
 
         foreach ($prefixes as $key => &$prefix)
         {
+            // Check if prefix should not be shown
+            if (in_array($prefix['prefix_id'], $options->pfl_no_display))
+            {
+                unset($prefixes[$key]);
+            }
             // verify if the current browsing user can see this prefix
             $userGroups = explode(',', $prefix['allowed_user_group_ids']);
+
             if (in_array(-1, $userGroups) || in_array($viewingUser['user_group_id'], $userGroups))
             {
                 // available to all groups or the primary group

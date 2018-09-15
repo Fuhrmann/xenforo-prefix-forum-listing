@@ -40,7 +40,7 @@ $(function()
     <template title="pfl_option_all_link"><![CDATA[<xen:checkboxunit label="" hint="{$preparedOption.hint}">
 	<xen:option name="{$fieldPrefix}[{$preparedOption.option_id}][enabled]" selected="{$preparedOption.option_value.enabled}">
 		<xen:label>{$preparedOption.title}</xen:label>
-		<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][linktext]" value="{$preparedOption.option_value.linktext}" placeholder="{xen:phrase pfl_option_all_link_placeholder}" />
+		<xen:textbox name="{$fieldPrefix}[{$preparedOption.option_id}][linkclass]" value="{$preparedOption.option_value.linkclass}" placeholder="{xen:phrase pfl_option_all_link_placeholder}" />
 	</xen:option>
 	<xen:explain>{xen:raw $preparedOption.explain}</xen:explain>
 	<xen:html>
@@ -111,6 +111,12 @@ display_order= {xen:phrase option_pfl_by_display_order}</edit_format_params>
       <sub_options></sub_options>
       <relation group_id="prefixForumListing" display_order="7"/>
     </option>
+    <option option_id="pfl_no_display" edit_format="callback" data_type="array" can_backup="1">
+      <default_value></default_value>
+      <edit_format_params>PrefixForumListing_Option_PrefixMultipleChooser::renderSelectM</edit_format_params>
+      <sub_options>*</sub_options>
+      <relation group_id="prefixForumListing" display_order="13"/>
+    </option>
     <option option_id="pfl_orderDirection" edit_format="radio" data_type="string" can_backup="1">
       <default_value>asc</default_value>
       <edit_format_params>asc = {xen:phrase option_pfl_asc}
@@ -119,10 +125,10 @@ desc = {xen:phrase option_pfl_desc}</edit_format_params>
       <relation group_id="prefixForumListing" display_order="25"/>
     </option>
     <option option_id="pfl_showAllLink" edit_format="template" data_type="array" can_backup="1">
-      <default_value>a:2:{s:7:"enabled";s:1:"1";s:8:"linktext";s:3:"All";}</default_value>
+      <default_value>a:2:{s:7:"enabled";s:1:"1";s:9:"linkclass";s:9:"prefixAll";}</default_value>
       <edit_format_params>pfl_option_all_link</edit_format_params>
       <sub_options>enabled
-linktext</sub_options>
+linkclass</sub_options>
       <relation group_id="prefixForumListing" display_order="10"/>
     </option>
     <option option_id="pfl_showTotalThreads" edit_format="template" data_type="string" can_backup="1">
@@ -162,6 +168,8 @@ linktext</sub_options>
     <phrase title="option_pfl_minToShow" version_id="9" version_string="1.2.3"><![CDATA[Minimum of Total Threads Count]]></phrase>
     <phrase title="option_pfl_minToShow_explain" version_id="9" version_string="1.2.3"><![CDATA[Choose here the minimum of thread count of each prefix that can be show in the prefix list.<br />
 If you set this value to 0, for example, all prefixes even with 0 threads will show the count.<br />If you set to 1, only prefixes that have thread count greater then 1 will show the thread count.<br /><b>This will only hide the thread count, not the prefix</b>]]></phrase>
+    <phrase title="option_pfl_no_display" version_id="12" version_string="1.2.5"><![CDATA[Hide Prefixes From List]]></phrase>
+    <phrase title="option_pfl_no_display_explain" version_id="12" version_string="1.2.5"><![CDATA[Choose prefixes which you wish to hide from the selector.]]></phrase>
     <phrase title="option_pfl_orderDirection" version_id="4" version_string="1.1.0"><![CDATA[Order Direction]]></phrase>
     <phrase title="option_pfl_orderDirection_explain" version_id="4" version_string="1.1.0"><![CDATA[Set the order direction to order the list.]]></phrase>
     <phrase title="option_pfl_showAllLink" version_id="9" version_string="1.2.3"><![CDATA[Show "All" link]]></phrase>
@@ -170,13 +178,14 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
     <phrase title="option_pfl_showTotalThreads_explain" version_id="4" version_string="1.1.0"><![CDATA[Check this option if you want to show the total count of threads of each prefix.]]></phrase>
     <phrase title="option_pfl_text" version_id="4" version_string="1.1.0"><![CDATA[Text to Show]]></phrase>
     <phrase title="option_pfl_text_explain" version_id="4" version_string="1.1.0"><![CDATA[This is the text to show before the prefixes list. Leave in blank to not show any text. Just the list of prefixes. <b>You may use HTML here</b>.]]></phrase>
+    <phrase title="pfl_all" version_id="12" version_string="1.2.5"><![CDATA[Show All]]></phrase>
     <phrase title="pfl_all_link_explain" version_id="9" version_string="1.2.3"><![CDATA[Restore the thread view to forum default]]></phrase>
     <phrase title="pfl_as_right_side_each_prefix" version_id="9" version_string="1.2.3"><![CDATA[...on the right side of each prefix]]></phrase>
     <phrase title="pfl_as_tooltip" version_id="9" version_string="1.2.3"><![CDATA[...as a tooltip]]></phrase>
     <phrase title="pfl_clean_cache" version_id="11" version_string="1.2.4"><![CDATA[This will clean up the cache created by the Prefix Forum Listing addon.]]></phrase>
     <phrase title="pfl_clean_up_cache" version_id="11" version_string="1.2.4"><![CDATA[Clean Up Prefix Forum Listing cache]]></phrase>
     <phrase title="pfl_click_for_specific" version_id="1" version_string="1.0.0"><![CDATA[Click for Specific Categories]]></phrase>
-    <phrase title="pfl_option_all_link_placeholder" version_id="9" version_string="1.2.3"><![CDATA[Add here the link text...]]></phrase>
+    <phrase title="pfl_option_all_link_placeholder" version_id="12" version_string="1.2.5"><![CDATA[Add all link class here...]]></phrase>
     <phrase title="pfl_show_only_prefix_x" version_id="1" version_string="1.0.0"><![CDATA[Show only threads prefixed by {prefix}.]]></phrase>
     <phrase title="pfl_show_only_the_x_prefix_y" version_id="9" version_string="1.2.3"><![CDATA[Show only the ({total}) threads prefixed by {prefix}.]]></phrase>
     <phrase title="pfl_show_total_as_tooltip" version_id="9" version_string="1.2.3"><![CDATA[The total threads of the prefix will show as a tooltip.]]></phrase>
@@ -256,9 +265,9 @@ If you set this value to 0, for example, all prefixes even with 0 threads will s
         </xen:if>
         <tr>
             <td>
-                <xen:if is="{$xenOptions.pfl_showAllLink} && {$xenOptions.pfl_showAllLink.linktext} != ''">
+                <xen:if is="{$xenOptions.pfl_showAllLink} && {$xenOptions.pfl_showAllLink.linkclass} != ''">
                     <a href="{xen:link forums, $forum}" class="prefixLink Tooltip" title="{xen:phrase pfl_all_link_explain}">
-                        <span class="prefixAll">{$xenOptions.pfl_showAllLink.linktext}</span>
+                        <span class="{$xenOptions.pfl_showAllLink.linkclass}">{xen:phrase pfl_all}</span>
                     </a> 
                 </xen:if>
             </td>
